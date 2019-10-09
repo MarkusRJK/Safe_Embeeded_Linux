@@ -1,6 +1,7 @@
 /var/log/dpkg.log {
 	monthly
-	rotate 12
+	rotate 1
+	size 500k
 	compress
 	delaycompress
 	missingok

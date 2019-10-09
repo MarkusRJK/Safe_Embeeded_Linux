@@ -2,7 +2,8 @@
 /var/log/unattended-upgrades/unattended-upgrades-dpkg.log
 /var/log/unattended-upgrades/unattended-upgrades-shutdown.log
 {
-  rotate 6
+  rotate 1
+  size 10k
   monthly
   compress
   missingok

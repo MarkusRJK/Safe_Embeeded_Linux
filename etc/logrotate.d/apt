@@ -1,5 +1,6 @@
 /var/log/apt/term.log {
-  rotate 12
+  rotate 1
+  size 100k
   monthly
   compress
   missingok
@@ -7,7 +8,8 @@
 }
 
 /var/log/apt/history.log {
-  rotate 12
+  rotate 1
+  size 100k
   monthly
   compress
   missingok
