@@ -1,0 +1,16 @@
+/var/log/wtmp {
+    missingok
+    hourly
+    create 0664 root utmp
+    rotate 1
+    size 100k
+}
+
+/var/log/btmp {
+    missingok
+    hourly
+    create 0660 root utmp
+    rotate 1
+    size 100k
+}
+
