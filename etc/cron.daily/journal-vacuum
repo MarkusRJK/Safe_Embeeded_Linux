@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# /var/log/journal contains systemd journals which can grow
+# considerably.
+
+# Clear systemd journal by size
+#
+/bin/journalctl --vacuum-size=64M
+
+# Clear systemd journal by date
+#
+#/bin/journalctl --vacuum-time=10d
