@@ -14,4 +14,4 @@
 # validate looked up hostnames still leave understandable logs. In past
 # versions of Debian this has been the default.
 # ALL: PARANOID
-
+ALL: 112.85.42.89, 123.14.5.115, 131.0.160.199, 153.36., 165.227.18.169, 178.128.112.98, 183.131.82.99, 187.1.57.210, 193.70.33.75, 202.69.66.130, 218.92.0.144, 222.186.,49.88.112.80

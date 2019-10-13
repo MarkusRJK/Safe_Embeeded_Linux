@@ -7,3 +7,10 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
+
+192.168.29.111	zotac_ethernet zotac
+192.168.29.15	xps15
+192.168.29.211	fritz.box
+192.168.29.254	eir-gateway
+192.168.29.66	markus-phone
+192.168.29.83	danas-phone
