@@ -16,3 +16,12 @@
 /sys
 /tmp
 /var
+/home
+/mnt
+/snap
+
+# directories with potential changes - hide
+#/boot
+#/etc
+#/root
+#/usr
