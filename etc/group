@@ -42,7 +42,7 @@ systemd-network:x:102:
 systemd-resolve:x:103:
 input:x:104:
 crontab:x:105:
-syslog:x:106:
+syslog:x:106:ubuntu
 messagebus:x:107:
 lxd:x:108:ubuntu
 mlocate:x:109:

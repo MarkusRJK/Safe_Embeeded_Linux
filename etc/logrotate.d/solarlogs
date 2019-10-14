@@ -24,7 +24,7 @@
     copytruncate
     rotate 1
     postrotate
-	/bin/cat /var/log/debug.log.1 /home/ubuntu/logs/debug.log
+	/bin/cat /var/log/debug.log.1 >> /home/ubuntu/logs/debug.log
     endscript
 }
 
