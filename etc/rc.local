@@ -21,30 +21,25 @@
 infoFile=/usr/local/bin/install-info.sh
 
 # list of executables related to installations
+# NOTE: there are more installation related executables
+#       but not all of them can be replaced by the
+#       link to install-info.sh or the system does not
+#       get up.
 exeList="\
 	/usr/bin/dpkg\
-	/usr/bin/dpkg-deb\
-	/usr/bin/dpkg-divert\
-	/usr/bin/dpkg-maintscript-helper\
-	/usr/bin/dpkg-query\
-	/usr/bin/dpkg-split\
-	/usr/bin/dpkg-statoverride\
 	/usr/bin/dpkg-trigger\
 	/usr/sbin/dpkg-preconfigure\
 	/usr/sbin/dpkg-reconfigure\
 	/usr/bin/apt\
 	/usr/bin/apt-add-repository\
-	/usr/bin/apt-cache\
-	/usr/bin/apt-cdrom\
-	/usr/bin/apt-config\
-	/usr/bin/apt-extracttemplates\
-	/usr/bin/apt-ftparchive\
 	/usr/bin/apt-get\
-	/usr/bin/apt-key\
 	/usr/bin/apt-mark\
 	/usr/bin/apt-sortpkgs"
 
 # disable installations
+# NOTE: this point is reached only with an overlayed FS
+#       i.e. the remove of the file and the replacement
+#       by a link happens in memory only.
 for file in $exeList; do
     rm $file
     ln -s $infoFile $file
