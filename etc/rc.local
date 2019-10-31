@@ -20,13 +20,20 @@
 # information file for any attempted installation
 infoFile=/usr/local/bin/install-info.sh
 
+# Disable periodic updates that would call apt-get
+# NOTE: whenever you boot the overlayed FS you
+#       will not be informed about updates
+echo "APT::Periodic::Enable "0";" >> /etc/apt/apt.conf.d/10periodic
+
+# Disable unattended upgrades
+sed -i 's/APT::Periodic::Unattended-Upgrade "1";/APT::Periodic::Unattended-Upgrade "0";/g' /etc/apt/apt.conf.d/20auto-upgrades
+
 # list of executables related to installations
 # NOTE: there are more installation related executables
 #       but not all of them can be replaced by the
 #       link to install-info.sh or the system does not
 #       get up.
 exeList="\
-	/usr/bin/dpkg\
 	/usr/bin/dpkg-trigger\
 	/usr/sbin/dpkg-preconfigure\
 	/usr/sbin/dpkg-reconfigure\
@@ -34,6 +41,8 @@ exeList="\
 	/usr/bin/apt-add-repository\
 	/usr/bin/apt-get\
 	/usr/bin/apt-mark\
+	/usr/bin/apt-config\
+	/usr/bin/snap\
 	/usr/bin/apt-sortpkgs"
 
 # disable installations
