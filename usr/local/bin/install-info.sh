@@ -18,11 +18,11 @@ echo "      read-only root FS."
 echo "      Any installations would be lost."
 echo
 echo "Do you wish to REBOOT to a writable root FS for"
-echo -n "installations (y/N)? "
+echo -n "installations (yes/N)? "
 
 read reply
 
-if [ $reply != 'y' -a $reply != 'Y' ]; then
+if [ $reply != 'yes' -a $reply != 'YES' ]; then
     exit 0
 fi
 
