@@ -57,7 +57,7 @@ done
 # stuff for later:
 
 #waterCtr=/home/ubuntu/Projects/RasberryPi/
-currentCtr=/home/ubuntu/Projects/vedirect-master/
+currentCtr=/home/ubuntu
 
 # scripts already running ==> exit
 #pgrep test.js && pgrep countInterrupts.py && exit 0
@@ -67,6 +67,6 @@ currentCtr=/home/ubuntu/Projects/vedirect-master/
 
 cd $currentCtr
 # -d detach, -m create tty
-pgrep test.js || sudo -u ubuntu screen -d -m -S solar /usr/bin/node test.js &
+sudo -u ubuntu /home/ubuntu/bin/startScreenSolar.sh &
 
 exit 0
