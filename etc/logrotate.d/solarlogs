@@ -1,30 +1,33 @@
 /var/log/current.log {
     missingok
     daily
+    size 100k
     copytruncate
     rotate 1
     postrotate
-	/bin/cat /var/log/current.log.1 >> /home/ubuntu/logs/current.log
+    /bin/cat /var/log/current.log.1 >> /home/ubuntu/logs/current.log
     endscript
 }
 
 /var/log/soc.log {
     missingok
     daily
+    size 100k
     copytruncate
     rotate 1
     postrotate
-	/bin/cat /var/log/soc.log.1 >> /home/ubuntu/logs/soc.log
+    /bin/cat /var/log/soc.log.1 >> /home/ubuntu/logs/soc.log
     endscript
 }
 
 /var/log/debug.log {
     missingok
     daily
+    size 100k
     copytruncate
     rotate 1
     postrotate
-	/bin/cat /var/log/debug.log.1 >> /home/ubuntu/logs/debug.log
+    /bin/cat /var/log/debug.log.1 >> /home/ubuntu/logs/debug.log
     endscript
 }
 
