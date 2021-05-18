@@ -22,11 +22,15 @@ echo -n "installations (yes/N)? "
 
 read reply
 
-if [ $reply != 'yes' -a $reply != 'YES' ]; then
+if [ '$reply' != 'yes' -a '$reply' != 'YES' ]; then
     exit 0
 fi
 
-sudo mount -o remount,rw $rootRO
+if [ -d $rootRO ]; then
+    sudo mount -o remount,rw $rootRO
+else
+    exit 0
+fi
 
 if [ -e $rootRO/do-not-disable-root-ro ]; then
     sudo mv $rootRO/do-not-disable-root-ro $rootRO/disable-root-ro 
