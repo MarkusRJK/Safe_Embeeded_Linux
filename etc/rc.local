@@ -54,4 +54,7 @@ for file in $exeList; do
     ln -s $infoFile $file
 done
 
+# make boot/firmware read-only
+mount -o remount,ro /boot/firmware
+
 exit 0

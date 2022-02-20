@@ -34,16 +34,15 @@ else
 fi
 
 if [ -e $rootRO/do-not-disable-root-ro ]; then
-    sudo mv $rootRO/do-not-disable-root-ro $rootRO/disable-root-ro 
+    sudo cp $rootRO/do-not-disable-root-ro $rootRO/disable-root-ro 
 else
     sudo touch $rootRO/disable-root-ro 
 fi
 
-# rarely we do installations and then a fsck is good for the disk
 if [ -e $rootRO/do-not-forcefsck ]; then
-    sudo mv $rootRO/do-not-forcefsck $rootRO/forcefsck
+    sudo cp $rootRO/do-not-forcefsck $rootRO/forcefsck
 else
-    sudo touch $rootRO/do-not-forcefsck
+    sudo touch $rootRO/do-not-forcefsck 
 fi
 
 sudo /sbin/reboot

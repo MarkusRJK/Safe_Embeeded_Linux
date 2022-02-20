@@ -1,14 +1,14 @@
 # Run Linux on Embedded Device Safely
 
-Raspberry PI and Arduion have become popular recently and it is easy to install Linux on them. 
-Some applications can run without display or keyboard/mouse. Examples would be a NAS, web or print server, 
-any control system reading data from sensors and/or controling actors. 
+Microcontrollers like Raspberry PI and Arduion have become popular recently and it is easy to install Linux on them. 
+Many applications do not need a display nor a keyboard or mouse. Examples would be a NAS, print server, any control system
+reads data from sensors and/or controls actors. We are all used to switching these devices off and on instantly
+(pull the plug). Unlike a desktop PC we do not want to shut it down and watch the monitor until the shutdown finished to
+pull the plug.
 
-For such devices we got used to switch them off by pulling the plug rather than shutting them down cleanly and wait. 
+With a Linux installed pulling the plug can corrupt the file system or make it unusable even if it is a journaling FS. 
 
-With a Linux installed pulling the plug can corrupt the file system or make it unusable even with a journaling FS. 
-
-This project shows a safe configuration based on an Ubuntu 18.04 on Raspberry PI. It should be portable to other
+This project shows a safe configuration based on an Ubuntu 18.04 on Raspberry PI but it should be portable to other
 Linux versions and flavours.
 
 ## Scope
