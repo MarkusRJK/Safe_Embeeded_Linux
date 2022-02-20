@@ -23,15 +23,26 @@ echo -n "installations (yes/N)? "
 read reply
 
 if [ $reply != 'yes' -a $reply != 'YES' ]; then
+    echo "Answer 'yes' or 'YES' to continue - try again"
     exit 0
 fi
 
-sudo mount -o remount,rw $rootRO
+if [ -d $rootRO ]; then
+    sudo mount -o remount,rw $rootRO
+else
+    exit 0
+fi
 
 if [ -e $rootRO/do-not-disable-root-ro ]; then
-    sudo mv $rootRO/do-not-disable-root-ro $rootRO/disable-root-ro 
+    sudo cp $rootRO/do-not-disable-root-ro $rootRO/disable-root-ro 
 else
     sudo touch $rootRO/disable-root-ro 
+fi
+
+if [ -e $rootRO/do-not-forcefsck ]; then
+    sudo cp $rootRO/do-not-forcefsck $rootRO/forcefsck
+else
+    sudo touch $rootRO/do-not-forcefsck 
 fi
 
 sudo /sbin/reboot
