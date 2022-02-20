@@ -41,7 +41,6 @@ exeList="\
 	/usr/bin/apt-add-repository\
 	/usr/bin/apt-get\
 	/usr/bin/apt-mark\
-	/usr/bin/apt-config\
 	/usr/bin/snap\
 	/usr/bin/apt-sortpkgs"
 
@@ -68,5 +67,11 @@ currentCtr=/home/ubuntu
 cd $currentCtr
 # -d detach, -m create tty
 sudo -u ubuntu /home/ubuntu/bin/startScreenSolar.sh &
+
+# FIXME: service not starting up
+vcontrold &
+
+# give vcontrol good time to startup before launching vitodens.sh
+sudo -u ubuntu /home/ubuntu/bin/startVito.sh &
 
 exit 0

@@ -1,0 +1,5 @@
+LABEL=cloudimg-rootfs	/	 ext4	defaults	0 0
+LABEL=system-boot       /boot/firmware  vfat    ro,suid,dev,exec,auto,nouser,async        0       1
+
+# /home as normal filesystem
+/dev/mmcblk0p3          /home           ext4    defaults        0       1
