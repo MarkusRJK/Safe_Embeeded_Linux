@@ -22,8 +22,8 @@ echo -n "installations (yes/N)? "
 
 read reply
 
-if [ $reply != 'yes' -a $reply != 'YES' ]; then
-    echo "Answer 'yes' or 'YES' to continue - try again"
+if [ "$reply" != "YES" ]; then
+    echo "Answer 'YES' to continue - try again"
     exit 0
 fi
 
