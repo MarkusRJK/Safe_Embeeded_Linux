@@ -1,0 +1,20 @@
+Ignored files:
+- are always ignored as new files only (if not yet in repo)
+- if force added to repo and later changed they behave like normal files in repo
+- use git add file -f to force add ignored files
+
+Files in Repo:
+- if file is in both repos (with different content), it is "replaced"
+  when switching
+- if file is in one repo but not the other, it is removed when switching
+- if a file is not in this repo but the other, switching gets it out.
+
+Strategy for Small Linux repo:
+- put all files into .gitignore
+- if a file of .gitignore needs to be added, use git add file -f IN ALL
+  branches (otherwise it will be deleted once you switch)
+- now this file behaves like a normal file
+
+Switching Branches:
+- Ensure that any added files after branching off will be added to the target
+  branch

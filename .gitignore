@@ -21,7 +21,7 @@
 /snap
 
 # directories with potential changes - hide
-#/boot
-#/etc
-#/root
-#/usr
+/boot
+/etc
+/root
+/usr
