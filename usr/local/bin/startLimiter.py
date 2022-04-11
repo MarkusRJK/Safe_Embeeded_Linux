@@ -2,6 +2,8 @@
 # -u unbuffered output to console
 
 # TODO special handling of specifig times at 21:30 and 17:00 half an hour before leave blockBurner!!!
+# FIXME: I saw the NIGHT TV IS ON message in the middle of the day, why?
+#        I saw NIGHT TV message at 18:52 and 21:20 till 21:50 ca - strange
 
 import pdb
 # setting isDebug reduces sleep times to 1 sec each
@@ -37,7 +39,8 @@ import traceback
 
 # specify times where boiler has to be able to start (times set at radiators)
 # specify a time as "hh:mm"
-mustSwitchOnAt = ["17:00", "21:30"]
+# list all times of thermostats and the heating
+mustSwitchOnAt = ["05:30","17:00", "19:10", "21:30"]
 mustSwitchToday = mustSwitchOnAt.copy()
 
 # interval in seconds to poll Vitodens whether the burner started/ignited:
@@ -366,7 +369,7 @@ def setNormalRoomTemperature(tc, temp):
     global cache_normalRoomTemp
 
     #temp = getInRange(temp, max(10, cache_reducedRoomTemp), 25)
-    temp = getInRange(temp, 10, 25)
+    temp = getInRange(temp, 5, 25)
     result = sendGenericCmd(tc, "setTempRaumNorSollM1 %d" % (temp), '')
     if (result != 'OK'):
         raise SystemError(result)
@@ -381,7 +384,7 @@ def setReducedRoomTemperature(tc, temp):
     global cache_reducedRoomTemp
 
     #pdb.set_trace()
-    temp = getInRange(temp, 10, 25)
+    temp = getInRange(temp, 5, 25)
     result = sendGenericCmd(tc, "setTempRaumRedSollM1 %d" % (temp), '')
     if (result != 'OK'):
         raise SystemError(result)
@@ -414,7 +417,8 @@ def getReducedRoomTemperature(tc):
     return cache_reducedRoomTemp
 
 def blockBurner(tc):
-    global burnerBlockTemp, burnerBlockTime, minBlockTime, normalTemp, maxBelowNorm, doExit, reset_slope, isFreezing
+    global burnerBlockTemp, burnerBlockTime, minBlockTime
+    global normalTemp, reducedTemp, maxBelowNorm, doExit, reset_slope, isFreezing
 
     setLevel(tc, 0)
 
@@ -445,8 +449,12 @@ def blockBurner(tc):
     # If the temp falls however, or is well below normalTemp, then fire
     cTemp = getColdestRoomTemp()
     cmpTemp = cTemp + 1
-    while (not doExit and (cTemp >= normalTemp or blockTime < burnerBlockTime)):
-        print(nowFormatted(), "WHILE ", cTemp, " cTemp >= normalTemp ", normalTemp, " or ", blockTime, " blockTime < burnerBlockTime")
+    if isNormalRoomTemp(tc):
+        minTemp = normalTemp
+    else: 
+        minTemp = reducedTemp
+    while (not doExit and (cTemp >= minTemp or blockTime < burnerBlockTime)):
+        print(nowFormatted(), "WHILE ", cTemp, " cTemp >= minTemp ", minTemp, " or ", blockTime, " blockTime < burnerBlockTime")
         sleepMinutes(minBlockTime)
         cTemp = getColdestRoomTemp()
         if (cTemp < tempNow and cmpTemp != cTemp):
@@ -463,10 +471,10 @@ def blockBurner(tc):
             break
         # Exception:
         #tempNow = getColdestRoomTemp()
-        if (getColdestRoomTemp() <= normalTemp-maxBelowNorm and isAnyoneAtHome()):
-            print(nowFormatted(), 'current temp. %.1f deg. is %.1f or more below normalTemp %.1f deg.' % (getColdestRoomTemp(), maxBelowNorm, normalTemp))
+        if (getColdestRoomTemp() <= minTemp-maxBelowNorm and isAnyoneAtHome()):
+            print(nowFormatted(), 'current temp. %.1f deg. is %.1f or more below minTemp %.1f deg.' % (getColdestRoomTemp(), maxBelowNorm, minTemp))
             break
-        if (tempNow >= normalTemp and reset_slope != None):
+        if (tempNow >= minTemp and reset_slope != None):
             setSlope(tc, reset_slope)
             print(nowFormatted(), 'reset slope to normal %.1f' % (cache_slope))
             printInfoTable()
