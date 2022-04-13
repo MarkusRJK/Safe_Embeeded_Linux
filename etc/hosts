@@ -8,9 +8,28 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 
-192.168.29.111	zotac_ethernet zotac
-192.168.29.15	xps15
+192.168.29.1	gateway
+
+192.168.29.31 homecontrol_eth homecontrol
+
+# 24:65:11:FF:C7:2E
 192.168.29.211	fritz.box
-192.168.29.254	eir-gateway
-192.168.29.66	markus-phone
-192.168.29.83	danas-phone
+# 00:01:2E:82:B7:20
+192.168.29.111	zotac_eth zotac TV
+# 88:30:8A:DD:AF:05
+192.168.29.10	note_10
+# FC:C2:DE:8D:C6:66
+192.168.29.66	phone_markus
+# FC:C2:DE:7E:8C:F7
+192.168.29.83	phone_dana
+# 44:1C:A8:E2:01:47
+192.168.29.15	XPS15
+# 84:7B:EB:4E:B0:0F
+192.168.29.150	XPS15_eth
+# 1C:65:9D:FB:8B:FB
+192.168.29.16	netdroid
+# mac ?
+192.168.29.160	netdroid_eth
+# 3C:19:5E:0D:66:D2 IP to be fixed
+192.168.29.149 phone_markus_5ghz
+# B8:27:EB:86:81:DB

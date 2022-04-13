@@ -1,9 +1,5 @@
+# Ignore files and directories:
 /bin
-/boot/System.map*
-/boot/config*
-/boot/initrd.img*
-/boot/vmlinuz*
-/boot/dtbs
 /dev
 /lib
 /lost+found
@@ -16,12 +12,87 @@
 /sys
 /tmp
 /var
-/home
 /mnt
 /snap
 
 # directories with potential changes - hide
-/boot
-/etc
 /root
+/home
+
+# Exclusion from ignorance:
+## But not these files...
+#!.gitignore
+#!script.pl
+#!template.latex
+## etc...
+#
+## ...even if they are in subdirectories
+#!*/
+#
+## if the files to be tracked are in subdirectories
+#!*/a/b/file1.txt
+#!*/a/b/c/*
+
+# Do not ignore github related files
+!/README.md
+!/README-gitops
+!/LICENSE
+!/.gitignore
+
+# Ignore all files in
+/etc
+# except
+!/etc/fstab
+!/etc/group
+!/etc/hosts
+!/etc/hosts.deny
+!/etc/hostname
+!/etc/rc.local
+!/etc/cloud/cloud-init.disabled
+
+# Ignore all files in
 /usr
+# except
+!/usr/local/bin/*
+
+# Ignore all files in
+/boot
+# except
+!/boot/firmware/config.txt
+!/boot/firmware/nobtcfg.txt
+!/boot/firmware/nobtcmd.txt
+!/boot/firmware/usercfg.txt
+
+# Ignore all files in /etc
+# except
+!/etc/vcontrold/*
+!/etc/init.d/vcontrold.initd.sh
+
+!/etc/logrotate.conf
+!/etc/logrotate.d/login
+!/etc/logrotate.d/alternatives
+!/etc/logrotate.d/apport
+!/etc/logrotate.d/apt
+!/etc/logrotate.d/dpkg
+!/etc/logrotate.d/lxd
+!/etc/logrotate.d/rsyslog
+!/etc/logrotate.d/ufw
+!/etc/logrotate.d/unattended-upgrades
+
+!/etc/logrotate.d/solarlogs
+
+/etc/apt/apt.conf.d/*
+!/etc/apt/apt.conf.d/20auto-upgrades
+!/etc/apt/apt.conf.d/20archive
+
+# logrotate move from daily to hourly
+!/etc/cron.hourly/logrotate
+!/etc/cron.daily/logrotate
+!/etc/cron.daily/journal-vacuum
+
+# layered filesystem
+!do-not-disable-root-ro
+!do-not-forcefsck
+!/etc/initramfs-tools/**
+
+
