@@ -41,6 +41,7 @@ exeList="\
 	/usr/bin/apt-add-repository\
 	/usr/bin/apt-get\
 	/usr/bin/apt-mark\
+	/usr/bin/apt-config\
 	/usr/bin/snap\
 	/usr/bin/apt-sortpkgs"
 
