@@ -1,23 +1,23 @@
 # Ignore files and directories:
-/bin
-/dev
-/lib
-/lost+found
-/media
-/opt
-/proc
-/run
-/sbin
-/srv
-/sys
-/tmp
-/var
-/mnt
-/snap
+/bin/**
+/dev/**
+/lib/**
+/lost+found/**
+/media/**
+/opt/**
+/proc/**
+/run/**
+/sbin/**
+/srv/**
+/sys/**
+/tmp/**
+/var/**
+/mnt/**
+/snap/**
 
 # directories with potential changes - hide
-/root
-/home
+/root/**
+/home/**
 
 # Exclusion from ignorance:
 ## But not these files...
@@ -40,7 +40,7 @@
 !/.gitignore
 
 # Ignore all files in
-/etc
+/etc/**
 # except
 !/etc/fstab
 !/etc/group
@@ -51,12 +51,12 @@
 !/etc/cloud/cloud-init.disabled
 
 # Ignore all files in
-/usr
+/usr/**
 # except
-!/usr/local/bin/*
+!/usr/local/**
 
 # Ignore all files in
-/boot
+/boot/**
 # except
 !/boot/firmware/config.txt
 !/boot/firmware/nobtcfg.txt
@@ -78,10 +78,11 @@
 !/etc/logrotate.d/rsyslog
 !/etc/logrotate.d/ufw
 !/etc/logrotate.d/unattended-upgrades
+!/etc/logrotate.d/ubuntu-advantage-tools
 
 !/etc/logrotate.d/solarlogs
 
-/etc/apt/apt.conf.d/*
+/etc/apt/apt.conf.d/**
 !/etc/apt/apt.conf.d/20auto-upgrades
 !/etc/apt/apt.conf.d/20archive
 
