@@ -53,7 +53,7 @@
 # Ignore all files in
 /usr/**
 # except
-!/usr/local/bin/*
+!/usr/local/**
 
 # Ignore all files in
 /boot/**
