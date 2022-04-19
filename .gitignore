@@ -75,6 +75,7 @@
 !/etc/logrotate.d/rsyslog
 !/etc/logrotate.d/ufw
 !/etc/logrotate.d/unattended-upgrades
+!/etc/logrotate.d/ubuntu-advantage-tools
 
 /etc/apt/apt.conf.d/**
 !/etc/apt/apt.conf.d/20auto-upgrades
