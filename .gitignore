@@ -65,7 +65,7 @@
 
 # Ignore all files in /etc
 # except
-!/etc/vcontrold/*
+!/etc/vcontrold/**
 !/etc/init.d/vcontrold.initd.sh
 
 !/etc/logrotate.conf
