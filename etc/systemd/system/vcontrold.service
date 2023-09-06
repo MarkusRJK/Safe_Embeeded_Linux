@@ -1,0 +1,15 @@
+# /etc/systemd/system/my-startup.service
+[Service]
+#Type=exec
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/vcontrold -l /var/log/vcontrold.log
+#Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Vitodens Control
+Wants=network-online.target
+After=network-online.target

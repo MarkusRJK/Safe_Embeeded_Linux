@@ -45,6 +45,19 @@ else
     sudo touch $rootRO/do-not-forcefsck 
 fi
 
-sudo /sbin/reboot
+echo "Do you wish to backup the boot and root"
+echo -n "partitions (y/NO)? "
+
+read reply
+
+if [ "$reply" != "NO" ]; then
+    d=$(date -I)
+    sudo dd if=/dev/mmcblk0p1 of=/home/ubuntu/boot-backup-$d.dat
+    sudo dd if=/dev/mmcblk0p2 of=/home/ubuntu/root-backup-$d.dat
+
+    exit 0
+fi
+
+#sudo /sbin/reboot
 
 exit 0

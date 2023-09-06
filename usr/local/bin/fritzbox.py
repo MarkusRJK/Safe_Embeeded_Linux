@@ -14,7 +14,7 @@ ain = '08761 0050583'
 
 
 # list of IPs that indicate that someone is at home
-list_of_IPs = ['192.168.29.66', '192.168.29.83']
+list_of_IPs = ['192.168.29.66', '192.168.29.83','3C:19:5E:0D:66:D2', 'EE:75:35:78:AC:B0']
 
 def isIPinList(thisIP):
     try:
@@ -40,8 +40,9 @@ def isAnyoneOnNetwork(serviceNo, filter):
         return True
 
 def isAnyoneAtHome():
-    return isAnyoneOnNetwork(1, 'ip') or isAnyoneOnNetwork(2, 'ip') or isAnyoneOnNetwork(3, 'ip') 
-
+    isIPonNet  = isAnyoneOnNetwork(1, 'ip') or isAnyoneOnNetwork(2, 'ip') or isAnyoneOnNetwork(3, 'ip') 
+    isMAConNet = isAnyoneOnNetwork(1, 'mac') or isAnyoneOnNetwork(2, 'mac') or isAnyoneOnNetwork(3, 'mac') 
+    return isIPonNet or isMAConNet
 
 # Living room is the coldest room in the house
 def getColdestRoomTemp():
