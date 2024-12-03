@@ -1,4 +1,4 @@
-import pdb
+#import pdb
 
 # see https://fritzconnection.readthedocs.io/en/1.0.1/sources/library.html#module-fritzconnection.lib.fritzwlan
 # pip3 install fritzconnection
@@ -26,7 +26,7 @@ def isIPinList(thisIP):
     return (result != '')
 
 def isAnyoneOnNetwork(serviceNo, filter):
-    pdb.set_trace()
+    #pdb.set_trace()
     try:
         fw = FritzWLAN(fc, service=serviceNo)
         hosts = fw.get_hosts_info()
