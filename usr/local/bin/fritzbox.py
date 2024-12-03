@@ -1,3 +1,5 @@
+import pdb
+
 # see https://fritzconnection.readthedocs.io/en/1.0.1/sources/library.html#module-fritzconnection.lib.fritzwlan
 # pip3 install fritzconnection
 # pip3 install requests
@@ -6,7 +8,7 @@ from fritzconnection.lib.fritzwlan import FritzWLAN
 from fritzconnection.lib.fritzhomeauto import FritzHomeAutomation
 
 
-fc = FritzConnection(address='192.168.29.211', password='A1sanKohler20.03.2015')
+fc = FritzConnection(address='192.168.29.211', user='markus', password='A1sanKohler20.03.2015')
 #fw = FritzWLAN(fc) # all networks: 2.4GHz, 5GHz and guest network
 fh = FritzHomeAutomation(fc)
 # AIN of FritzDect in Living Room
@@ -24,6 +26,7 @@ def isIPinList(thisIP):
     return (result != '')
 
 def isAnyoneOnNetwork(serviceNo, filter):
+    pdb.set_trace()
     try:
         fw = FritzWLAN(fc, service=serviceNo)
         hosts = fw.get_hosts_info()
@@ -42,6 +45,12 @@ def isAnyoneOnNetwork(serviceNo, filter):
 def isAnyoneAtHome():
     isIPonNet  = isAnyoneOnNetwork(1, 'ip') or isAnyoneOnNetwork(2, 'ip') or isAnyoneOnNetwork(3, 'ip') 
     isMAConNet = isAnyoneOnNetwork(1, 'mac') or isAnyoneOnNetwork(2, 'mac') or isAnyoneOnNetwork(3, 'mac') 
+    # FIXME: fc is not working as expected. Since FritzOS 8.0.0
+    #        all WLAN devices are on 2.4GHz and fc.get_hosts()
+    #        delivers empty array. Temperature request from FritzDECT
+    #        apparently still works. Early return with true always 
+    #        until issue is fixed
+    return True
     return isIPonNet or isMAConNet
 
 # Living room is the coldest room in the house
