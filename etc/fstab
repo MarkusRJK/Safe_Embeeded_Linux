@@ -3,3 +3,5 @@ LABEL=system-boot       /boot/firmware  vfat    defaults        0       1
 
 # /home as normal filesystem
 /dev/mmcblk0p3          /home           ext4    defaults        0       1
+
+sshfs#markus@xps15:/media/markus/198a67ca-d790-4ca0-b30a-83ed381f9bd5 /mnt/markus fuse noauto,user,uid=1000,gid=100,umask=777 0 0

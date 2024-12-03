@@ -7,9 +7,9 @@
 
 rootRO=/mnt/root-ro
 
-(df | grep -q "$rootRO"    ) || exit 0
-(df | grep -q "mnt/root-rw") || exit 0
-(df | grep -q "aufs"       ) || exit 0
+#(df | grep -q "$rootRO"    ) || exit 0
+#(df | grep -q "mnt/root-rw") || exit 0
+#(df | grep -q "aufs"       ) || exit 0
 
 echo
 echo "NOTE: You are trying to modify the root FS."
@@ -18,13 +18,43 @@ echo "      read-only root FS."
 echo "      Any installations would be lost."
 echo
 echo "Do you wish to REBOOT to a writable root FS for"
-echo -n "installations (yes/N)? "
+echo -n "installations (YES/[N])? "
 
 read reply
 
 if [ "$reply" != "YES" ]; then
-    echo "Answer 'YES' to continue - try again"
+    echo "Answer 'YES' (all capital) to continue - try again"
     exit 0
+fi
+
+#backupDir=$HOME
+# use external drive for space:
+backupDir=/home/ubuntu
+echo "Do you wish to backup the boot and root"
+existsLink=0
+test -L "$backupDir/PI-backup" && existsLink=1
+if [ $existsLink -eq 1 ]; then
+    dirContents=$(sudo ls $backupDir/PI-backup 2> /dev/null)
+    if [ "$dirContents" != "$backupDir/PI-backup" ]; then
+        backupDir=$backupDir/PI-backup
+    fi
+fi
+echo -n "partitions to $backupDir ([y]/NO)? "
+
+read reply
+
+if [ "$reply" != "NO" ]; then
+    d=$(date -I)
+    sudo dd if=/dev/mmcblk0p1 of=$backupDir/boot-backup-$d.dat status=progress
+    if [ $? != 0 ]; then 
+	echo ERROR: boot partition backup failed - exiting - no reboot
+        exit 1
+    fi
+    sudo dd if=/dev/mmcblk0p2 of=$backupDir/root-backup-$d.dat status=progress
+    if [ $? != 0 ]; then 
+	echo ERROR: root partition backup failed - exiting - no reboot
+        exit 1
+    fi
 fi
 
 if [ -d $rootRO ]; then
@@ -45,19 +75,6 @@ else
     sudo touch $rootRO/do-not-forcefsck 
 fi
 
-echo "Do you wish to backup the boot and root"
-echo -n "partitions (y/NO)? "
-
-read reply
-
-if [ "$reply" != "NO" ]; then
-    d=$(date -I)
-    sudo dd if=/dev/mmcblk0p1 of=/home/ubuntu/boot-backup-$d.dat
-    sudo dd if=/dev/mmcblk0p2 of=/home/ubuntu/root-backup-$d.dat
-
-    exit 0
-fi
-
-#sudo /sbin/reboot
+sudo /sbin/reboot
 
 exit 0
