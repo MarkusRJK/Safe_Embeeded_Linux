@@ -2,14 +2,23 @@
 [Service]
 #Type=exec
 Type=oneshot
+#Type=forking
+#User=vcontrol
+Group=vcontrol
 RemainAfterExit=yes
-ExecStart=/usr/local/sbin/vcontrold -l /var/log/vcontrold.log
+ExecStart=/usr/local/sbin/vcontrold -x /etc/vcontrold/vcontrold.xml -l /var/log/vcontrold.log
+ExecReload=/bin/kill -HUP $MAINPID
 #Restart=always
+#Restart=on-failure
+#RestartSec=120
+StandardOutput=null
 
 [Install]
 WantedBy=multi-user.target
 
 [Unit]
-Description=Vitodens Control
-Wants=network-online.target
-After=network-online.target
+Description=Viessmann heating systems interface
+Documentation=https://github.com/openv/vcontrold
+After=syslog.target systemd-udev-settle.service
+#Wants=network-online.target
+#After=network-online.target

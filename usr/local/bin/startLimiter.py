@@ -42,6 +42,7 @@ import traceback
 # list all times of thermostats and the heating
 mustSwitchOnAt = ["05:30","17:00", "19:10", "21:30"]
 mustSwitchToday = mustSwitchOnAt.copy()
+startVlRlRecording = False
 
 # interval in seconds to poll Vitodens whether the burner started/ignited:
 burnerStartPollTime=20 # seconds
@@ -64,6 +65,7 @@ burnerBlockTime=30 # min
 # set temperature to 10 degrees to block the burner.
 # NOTE: have seen burner igniting for a few seconds in the night.
 #       To rule this out set blocking temperature far lower than reduced temp.
+# FIXME: can be removed as now calculated from outside temp
 burnerBlockTemp=5
 # Viessman blocks the burner for 4 min which still causes 100000 of burner
 # starts per year. Blocking it for at least double the time (8 min)
@@ -382,8 +384,11 @@ def setReducedRoomTemperature(tc, temp):
     temp is returned
     """
     global cache_reducedRoomTemp
+    global cache_outsideTemp
 
     #pdb.set_trace()
+    # set temp below outside temperature to switch off pump
+    # set temp above outside temperature to switch on pump
     temp = getInRange(temp, 5, 25)
     result = sendGenericCmd(tc, "setTempRaumRedSollM1 %d" % (temp), '')
     if (result != 'OK'):
@@ -416,6 +421,32 @@ def getReducedRoomTemperature(tc):
     cache_reducedRoomTemp = getInteger(tc, 'getTempRaumRedSollM1')
     return cache_reducedRoomTemp
 
+# works currently only for one configured switch time
+# on Vitodens
+def isNormalRoomTemp(tc):
+    global cache_isNormalRoomTemp
+    circuit = 1
+    cache_isNormalRoomTemp = True
+    result = sendGenericCmd(tc, 'getTimerM%d%s' % (circuit, getWeekday()), '')
+    if (not result or len(result) < 20):
+        return True
+    try:
+        hourOn    = int(result[5:7])
+        minuteOn  = int(result[8:10])
+        hourOff   = int(result[16:18])
+        minuteOff = int(result[19:])
+    except ValueError:
+        tb = sys.exc_info()[2]
+        raise ValueError('ValueError in isNormalRoomTemp').with_traceback(tb)
+    now = datetime.now()
+    todayOn  = now.replace(hour=hourOn, minute=minuteOn, second=0, microsecond=0)
+    todayOff = now.replace(hour=hourOff, minute=minuteOff, second=0, microsecond=0)
+
+    if (now > todayOn and now < todayOff):
+        return True
+    cache_isNormalRoomTemp = False
+    return False
+
 def blockBurner(tc):
     global burnerBlockTemp, burnerBlockTime, minBlockTime
     global normalTemp, reducedTemp, maxBelowNorm, doExit, reset_slope, isFreezing
@@ -426,10 +457,12 @@ def blockBurner(tc):
     # reduce temperature to avoid new start
     # first reduce the reduced room temperature then normal room temp.
     # otherwise the burner will use the reduced temperature program
-    setReducedRoomTemperature(tc, burnerBlockTemp)
-    setNormalRoomTemperature(tc, burnerBlockTemp)
+    blockTempWithPump = getOutsideTemperature(tc) + 2
+    blockTempWithoutPump = getOutsideTemperature(tc) - 2
+    setReducedRoomTemperature(tc, blockTempWithPump)
+    setNormalRoomTemperature(tc, blockTempWithPump)
 
-    print(nowFormatted(), 'reduced temperature to %d deg. to block burner' % (burnerBlockTemp))
+    print(nowFormatted(), 'reduced temperature to %d deg. to block burner (pump on)' % (blockTempWithPump))
     printInfoTable()
 
     bs = getBurnerStarts(tc)
@@ -456,6 +489,12 @@ def blockBurner(tc):
     while (not doExit and (cTemp >= minTemp or blockTime < burnerBlockTime)):
         print(nowFormatted(), "WHILE ", cTemp, " cTemp >= minTemp ", minTemp, " or ", blockTime, " blockTime < burnerBlockTime")
         sleepMinutes(minBlockTime)
+
+        if getTempVL(tc) < getTempRL(tc) + 5:
+            setReducedRoomTemperature(tc, blockTempWithoutPump)
+            setNormalRoomTemperature(tc, blockTempWithoutPump)
+            print(nowFormatted(), 'reduced temperature to %d deg. to block burner (pump off)' % (blockTempWithoutPump))
+
         cTemp = getColdestRoomTemp()
         if (cTemp < tempNow and cmpTemp != cTemp):
             print(nowFormatted(), "coldest room temp fell from %.1f to %.1f while waiting for %d min" % (tempNow, cTemp, blockTime))
@@ -511,32 +550,6 @@ def getWeekday():
         day = "So"
     return day
 
-# works currently only for one configured switch time
-# on Vitodens
-def isNormalRoomTemp(tc):
-    global cache_isNormalRoomTemp
-    circuit = 1
-    cache_isNormalRoomTemp = True
-    result = sendGenericCmd(tc, 'getTimerM%d%s' % (circuit, getWeekday()), '')
-    if (not result or len(result) < 20):
-        return True
-    try:
-        hourOn    = int(result[5:7])
-        minuteOn  = int(result[8:10])
-        hourOff   = int(result[16:18])
-        minuteOff = int(result[19:])
-    except ValueError:
-        tb = sys.exc_info()[2]
-        raise ValueError('ValueError in isNormalRoomTemp').with_traceback(tb)
-    now = datetime.now()
-    todayOn  = now.replace(hour=hourOn, minute=minuteOn, second=0, microsecond=0)
-    todayOff = now.replace(hour=hourOff, minute=minuteOff, second=0, microsecond=0)
-
-    if (now > todayOn and now < todayOff):
-        return True
-    cache_isNormalRoomTemp = False
-    return False
-
 def isBurnerRequired():
     """
     The heating in certain rooms stays off for a long time and then the room needs to be heat up.
@@ -544,6 +557,7 @@ def isBurnerRequired():
     by a long time.
     """
     global mustSwitchToday
+    global startVlRlRecording
     now = datetime.now()
     #pdb.set_trace()
     for t in mustSwitchToday:
@@ -551,6 +565,10 @@ def isBurnerRequired():
         m = int(t.split(':')[1])
         todayOn  = now.replace(hour=h, minute=m, second=0, microsecond=0)
         if (now >= todayOn):
+            if (len(mustSwitchOnAt) == len(mustSwitchToday)):
+                startVlRlRecording = True
+            else:
+                startVlRlRecording = False
             # a once used time is removed from the array
             mustSwitchToday.remove(t)
             return True
@@ -667,6 +685,16 @@ def setRoomTemp(tc):
         #setNormalRoomTemperature(tc, normalTemp)
         setReducedRoomTemperature(tc, rTemp - rDiff)
 
+def writeVlRlData(VL, RL, timestamps):
+    obj = {
+        'VL':    VL,
+        'RL':    RL,
+        'index': timestamps
+        }
+    fn = "/home/ubuntu/data/" + datetime.now().strftime("%H_%M_%S") + ".json"
+    with open(fn, "w") as wfile:
+        wfile.write(json.dumps(obj))
+
 def waitForBurnerOff(tc):
     global burnerOnPollTime, doExit, cache_level
 
@@ -690,18 +718,9 @@ def waitForBurnerOff(tc):
         print(nowFormatted(), 'at this minute everyone left the house - switch burner off')
     # reset level
     setLevel(tc, 0)
-    #writeVlRlData(VL, RL, timestamps)
+    if startVlRlRecording:
+        writeVlRlData(VL, RL, timestamps)
 	
-#def writeVlRlData(VL, RL, timestamps):
-#    obj = {
-#        'VL':    VL,
-#        'RL':    RL,
-#        'index': timestamps
-#        }
-#    fn = "data/" + datetime.now().strftime("%H_%M_%S") + ".json"
-#    with open(fn, "w") as wfile:
-#        wfile.write(json.dumps(obj))
-
 def printInfoTable():
     global rTemp, nTemp, vitodens, reducedTemp, normalTemp, hysteresis
     global cache_power, cache_tempReturnFlow 
